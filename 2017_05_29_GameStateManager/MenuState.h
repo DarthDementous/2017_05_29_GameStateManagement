@@ -11,9 +11,6 @@ public:
 	MenuState(APP* a_app);
 	virtual ~MenuState();
 
-	virtual void Update(float deltaTime);
-	virtual void Draw();
-
 protected:
 private:
 };

@@ -12,7 +12,6 @@ public:
 	virtual ~PauseState();
 
 	virtual void Update(float deltaTime);
-	virtual void Draw();
 
 protected:
 private:

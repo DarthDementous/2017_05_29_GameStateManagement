@@ -28,33 +28,8 @@ bool _2017_05_29_GameStateManagerApp::startup() {
 	m_stateManager->PushState("PAUSE", new PauseState(this));
 
 	m_stateManager->SetState("PLAY");
-	m_stateManager->SetState("PAUSE");
 	m_stateManager->SetState("MENU");
-	m_stateManager->PopState();
-
 #pragma endregion
-
-
-	/*
-	gm->PushState("SPLASH", new SplashState(this));
-	gm->PushState("MENU", new MenuState(this));
-	gm->PushState("PLAY", new PlayState(this));
-	gm->PushState("PAUSED", new PlayState(this));
-
-	gm->PushState("PAUSED", nullptr);
-
-	gm->PopState();
-
-	gm->SetState("SPLASH");
-	gm->SetState("PAUSED");
-
-	// once per frame (update)
-	gm->UpdateGameStates(deltaTime);
-
-	// once per draw (draw)
-	gm->DrawGameStates();
-	
-	*/
 
 	return true;
 }

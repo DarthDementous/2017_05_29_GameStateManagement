@@ -20,7 +20,10 @@ void GameStateManager::Update(float deltaTime)
 	
 	// Update active states
 	for (auto state : m_activeStates) {
-		state->Update(deltaTime);
+		// Only update states where updating is active
+		if (state->IsUpdateActive()) {
+			state->Update(deltaTime);
+		}
 	}
 }
 
@@ -28,7 +31,10 @@ void GameStateManager::Draw()
 {
 	// Draw active states
 	for (auto state : m_activeStates) {
-		state->Draw();
+		// Only draw states where drawing is active
+		if (state->IsDrawActive()) {
+			state->Draw();
+		}
 	}
 }
 
@@ -58,6 +64,40 @@ void GameStateManager::PopState()
 
 	m_commands.push_back(cmd);
 }
+
+void GameStateManager::PauseStates()
+{
+	Command cmd;
+	cmd.action = eCommands::PAUSE;
+
+	m_commands.push_back(cmd);
+}
+
+
+void GameStateManager::ResumeStates()
+{
+	Command cmd;
+	cmd.action = eCommands::RESUME;
+
+	m_commands.push_back(cmd);
+}
+
+void GameStateManager::DoPauseStates()
+{
+	// 'Freeze' all active states by stopping updating capabilities
+	for (auto state : m_activeStates) {
+		state->SetUpdateActive(false);
+	}
+}
+
+void GameStateManager::DoResumeStates()
+{
+	// Un-freeze all active states by restoring updating capabilities
+	for (auto state : m_activeStates) {
+		state->SetUpdateActive(true);
+	}
+}
+
 
 void GameStateManager::DoPushState(const char * name, IGameState * state)
 {
@@ -106,6 +146,9 @@ void GameStateManager::ProcessCommands()
 		case eCommands::SET:	DoSetState(cmd.name);				break;
 		case eCommands::PUSH:	DoPushState(cmd.name, cmd.state);	break;
 		case eCommands::POP:	DoPopState();						break;
+		case eCommands::PAUSE:	DoPauseStates();					break;
+		case eCommands::RESUME:	DoResumeStates();					break;
+
 		default:
 			assert(false && "Invalid command on queue");
 		}
