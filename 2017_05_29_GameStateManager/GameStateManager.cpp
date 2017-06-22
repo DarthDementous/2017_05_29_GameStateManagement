@@ -132,7 +132,7 @@ void GameStateManager::DoSetState(const char * name)
 
 	if (foundNode) {
 		// Check if state is already in active states
-		assert(m_activeStates.Contains(foundNode->m_val) && "State already in active states");
+		assert(!m_activeStates.Contains(foundNode->m_val) && "State already in active states");
 		m_activeStates.PushBack(foundNode->m_val);
 	}
 	else {
