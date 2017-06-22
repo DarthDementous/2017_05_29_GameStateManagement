@@ -1,8 +1,9 @@
 #pragma once
 
 #include "IGameState.h"
-#include <map>
-#include <vector>
+#include <Stack.hpp>
+#include <Queue.hpp>
+#include <Map.hpp>
 
 class GameStateManager {
 public:
@@ -23,7 +24,7 @@ public:
 	*	@brief Get top state off the stack.
 	*	@return State at the end of the container.
 	*/
-	IGameState* GetTopState() { return m_activeStates[m_activeStates.size() - 1]; }
+	IGameState* GetTopState() { return m_activeStates.Top(); }
 
 	/**
 	*	@brief Send command to pause current states
@@ -85,7 +86,7 @@ private:
 	*/
 	void ProcessCommands();
 	
-	std::map<const char*, IGameState*>		m_states;			/*Map container of currently held states*/
-	std::vector<IGameState*>				m_activeStates;		/*Vector container of active states*/
-	std::vector<Command>					m_commands;			/*Vector container of commands to be executed*/
+	Map<const char*, IGameState*>	m_states;			/*Map container of currently held states*/
+	Stack<IGameState*>				m_activeStates;		/*Stack of active states*/
+	Queue<Command>					m_commands;			/*Queue of commands to be executed*/
 };

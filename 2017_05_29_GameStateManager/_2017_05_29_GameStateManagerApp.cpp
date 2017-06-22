@@ -18,8 +18,9 @@ _2017_05_29_GameStateManagerApp::~_2017_05_29_GameStateManagerApp() {
 bool _2017_05_29_GameStateManagerApp::startup() {
 	
 	m_2dRenderer = new aie::Renderer2D();
-	m_font = new aie::Font("./font/consolas.ttf", 32);
+	//m_font = new aie::Font("./font/consolas.ttf", 32);
 	
+#if 1
 #pragma region State Manager
 	m_stateManager = new GameStateManager;
 
@@ -30,13 +31,13 @@ bool _2017_05_29_GameStateManagerApp::startup() {
 	m_stateManager->SetState("PLAY");
 	m_stateManager->SetState("MENU");
 #pragma endregion
-
+#endif
 	return true;
 }
 
 void _2017_05_29_GameStateManagerApp::shutdown() {
 	delete m_stateManager;
-	delete m_font;
+	//delete m_font;
 	delete m_2dRenderer;
 }
 
@@ -49,8 +50,8 @@ void _2017_05_29_GameStateManagerApp::update(float deltaTime) {
 	if (input->isKeyDown(aie::INPUT_KEY_ESCAPE))
 		quit();
 
-	// Update state
-	m_stateManager->Update(deltaTime);
+	// Update states
+	//m_stateManager->Update(deltaTime);
 }
 
 void _2017_05_29_GameStateManagerApp::draw() {
@@ -64,10 +65,10 @@ void _2017_05_29_GameStateManagerApp::draw() {
 	// draw your stuff here!
 	
 	// output some text, uses the last used colour
-	m_2dRenderer->drawText(m_font, "Press ESC to quit", 0, 0);
+	//m_2dRenderer->drawText(m_font, "Press ESC to quit", 0, 0);
 
 	// Draw states
-	m_stateManager->Draw();
+	//m_stateManager->Draw();
 
 	// done drawing sprites
 	m_2dRenderer->end();

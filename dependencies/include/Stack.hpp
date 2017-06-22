@@ -23,6 +23,19 @@ public:
 	}
 
 	/**
+	*	@brief	Search through container to see if item is in stack.
+	*	@param	a_item is the item to search for.
+	*/
+	bool Contains(T a_item) {
+		for (auto i = 0; i < m_data.GetSize(); ++i) {
+			if (m_data[i] == a_item) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/**
 	*	@brief	Return alias of element at the top of the container (relative).
 	*/
 	T&		Top() { return m_data[m_top]; }
