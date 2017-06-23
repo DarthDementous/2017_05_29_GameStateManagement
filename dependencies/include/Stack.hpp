@@ -27,7 +27,7 @@ public:
 	*	@param	a_item is the item to search for.
 	*/
 	bool Contains(T a_item) {
-		for (auto i = 0; i < m_data.GetSize(); ++i) {
+		for (size_t i = 0; i < m_data.GetSize(); ++i) {
 			if (m_data[i] == a_item) {
 				return true;
 			}

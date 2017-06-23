@@ -26,12 +26,12 @@ public:
 	bool IsDrawActive() { return drawIsActive; }
 
 protected:
-	APP*					m_app;
+	APP* m_app;
 	
-	float xPosText = DEFAULT_TEXT_POS;
+	float xPosText				= DEFAULT_TEXT_POS;
 	const char* stateDrawText;
 
-	bool updateIsActive = true;
-	bool drawIsActive = true;
+	bool updateIsActive			=	true;
+	bool drawIsActive			=	true;
 private:
 };

@@ -26,9 +26,9 @@ public:
 
 	/**
 	*	@brief Get number of elements in container.
-	*	@param Returns an integer to avoid type mismatch.
+	*	@param Returns an unsigned int of size.
 	*/
-	int		GetSize() { return (int)m_size; }
+	size_t	GetSize() { return m_size; }
 
 	/**
 	*	@brief Are there any elements in the container?

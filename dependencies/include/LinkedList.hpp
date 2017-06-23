@@ -9,11 +9,36 @@ template<class T> class LinkedList : public Container<T> {
 public:
 	LinkedList() = default;
 
+	LinkedList(LinkedList& a_other) {
+		Copy(a_other);
+	}
+
 	/**
 	*	@brief Delete all dynamically allocated LinkNodes
 	*/
 	~LinkedList() {
 		Erase(begin(), end());
+	}
+
+	LinkedList& operator=(LinkedList& a_other) {
+		Copy(a_other);
+	}
+
+	/**
+	*	@brief Deep copy all variables and nodes in the LinkedList (necessary for pointers)
+	*	NOTE: Gets run INSTEAD of default constructor if its called on declaration of new container.
+	*	@param a_other is the LinkedList to copy data from.
+	*/
+	void Copy(LinkedList& a_other) {
+		// Free up memory in previous LinkedList if it hasn't been initialized
+		if (m_firstNode) {
+			Erase(begin(), end());
+		}
+
+		// Create new linked list from the values in the old one
+		for (auto val : a_other) {
+			PushBack(val);
+		}
 	}
 
 	virtual void PushBack(T a_item) override {
@@ -90,9 +115,6 @@ public:
 		LinkNode*	m_prev   = nullptr;				// Previous element in linked list
 		
 		T& GetValue() { return m_value; }
-
-		operator T() { return m_value; }		/* Conversion of LinkNode to its value (LinkNode() = LinkNode.m_value)
-												NOTE: This allows it to be used both ways instead of overloading all operators*/
 	};
 #pragma endregion
 

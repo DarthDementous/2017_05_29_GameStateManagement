@@ -14,10 +14,40 @@ public:
 		m_data = new T[m_capacity];							// Assign m_data a pointer to a new block of memory
 	};
 
+	List(List& a_other) {
+		Copy(a_other);
+	}
+
 	/**
 	*	@brief Delete memory in list.
 	*/
 	~List() { delete[] m_data; }				
+
+	List& operator=(List& a_other) {
+		Copy(a_other);
+		return *this;
+	}
+
+	/**
+	*	@brief Properly copy data from List into this one. NOTE: Deep copy necessary because m_data is a pointer.
+	*	NOTE: Gets run INSTEAD of default constructor if its called on declaration of new container.
+	*	@param a_other is the List to copy data from.
+	*/
+	void Copy(List& a_other) {
+		// Free up previous data array if it has been initialized
+		if (m_data) {
+			delete[] m_data;
+		}
+
+		// Create new spot in memory and copy over variables
+		m_data		= new T[a_other.m_capacity];
+		m_capacity	= a_other.m_capacity;
+		m_size		= a_other.m_size;
+		
+		for (size_t i = 0; i < m_size; ++i) {
+			m_data[i] = a_other[i];
+		}
+	}
 
 	virtual void PushBack(T a_item) override {
 		// If adding to list goes over capacity, copy over old data to new one
@@ -54,6 +84,6 @@ public:
 	*/
 	T&		Top() { return m_data[m_top]; }
 protected:
-	T*			m_data;										/* Array of data in container*/
-	size_t		m_capacity;									/* How much data the list is intended to hold.*/
+	T*			m_data = nullptr;										/* Array of data in container*/
+	size_t		m_capacity;												/* How much data the list is intended to hold.*/
 };
