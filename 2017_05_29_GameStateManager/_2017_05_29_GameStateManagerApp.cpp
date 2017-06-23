@@ -28,6 +28,7 @@ bool _2017_05_29_GameStateManagerApp::startup() {
 	m_stateManager->PushState("PLAY", new PlayState(this));
 	m_stateManager->PushState("PAUSE", new PauseState(this));
 
+	m_stateManager->SetState("MENU");
 	m_stateManager->SetState("PLAY");
 #pragma endregion
 #endif
@@ -48,12 +49,6 @@ void _2017_05_29_GameStateManagerApp::update(float deltaTime) {
 	// exit the application
 	if (input->isKeyDown(aie::INPUT_KEY_ESCAPE))
 		quit();
-
-#ifdef _DEBUG
-	//if (m_stateManager->GetTopState()->IsUpdateActive()) {
-	//	bool stop = true;
-	//}
-#endif
 
 	// Update states
 	m_stateManager->Update(deltaTime);

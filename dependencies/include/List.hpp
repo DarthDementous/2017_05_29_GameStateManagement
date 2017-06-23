@@ -69,8 +69,9 @@ public:
 
 	virtual void PopBack() override {
 		assert(m_size > 0 && "Attempting to pop back on an empty container.");
-
-		m_size--;											// Decrease size to essentially 'ignore' last element
+		// Decrease size and top to essentially 'ignore' last element
+		--m_top;
+		--m_size;										
 	}
 
 	T& operator[](size_t a_index) {

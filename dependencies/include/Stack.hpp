@@ -19,7 +19,11 @@ public:
 
 	virtual void PopBack() override { 
 		assert(m_size > 0 && "Attempting to pop back on an empty container.");
-		m_top = --m_size;							// Decrease size of list to essentially 'ignore' last element and update top of list accordingly
+		// Decrease size of list to essentially 'ignore' last element and update 0-based top of list
+		--m_top;
+		--m_size;
+
+		m_data.PopBack();
 	}
 
 	/**

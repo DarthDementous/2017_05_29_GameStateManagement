@@ -89,8 +89,6 @@ public:
 		m_lastNode = newLastNode;
 	}
 
-	
-
 	void PopFront() {
 		assert(m_firstNode != nullptr && "Attempting to pop front on empty linked list.");
 
