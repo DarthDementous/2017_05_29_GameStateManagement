@@ -44,6 +44,7 @@ public:
 	virtual void PushBack(T a_item) override {
 		++m_size;
 
+		// Dynamically allocate memory for the node (only once or else memory leaks)
 		LinkNode* tmp = new LinkNode(a_item);
 
 		// Initialize first and last nodes with new node in no longer empty list
@@ -53,8 +54,6 @@ public:
 		}
 		// If LinkedList is not empty, point new LinkNode at previously last element and position it in the list with pointers
 		else {
-			LinkNode* tmp = new LinkNode(a_item);
-
 			m_lastNode->m_next	= tmp;
 			tmp->m_prev			= m_lastNode;
 			m_lastNode			= tmp;
@@ -82,21 +81,15 @@ public:
 	virtual void PopBack() override {
 		assert(m_firstNode != nullptr && "Attempting to pop back on empty linked list.");
 
-		LinkNode *newLastNode = m_lastNode->m_prev;
-
-		// Erase end node and replace
+		// Erase end node
 		Erase(LinkIterator(m_lastNode));
-		m_lastNode = newLastNode;
 	}
 
 	void PopFront() {
 		assert(m_firstNode != nullptr && "Attempting to pop front on empty linked list.");
 
-		LinkNode *newFirstNode = m_firstNode->m_next;
-
-		// Erase front node and replace
+		// Erase front node
 		Erase(LinkIterator(m_firstNode));
-		m_firstNode = newFirstNode;
 	}
 
 #pragma region LinkNode
@@ -176,6 +169,7 @@ public:
 	LinkIterator Erase(LinkIterator a_iter) {
 		assert(a_iter.GetLink() != nullptr && "Attempting to erase a null iterator.");
 		
+		// Decrease size
 		--m_size;
 
 		// Save next position
@@ -186,23 +180,25 @@ public:
 		LinkNode* nextNode = a_iter.GetLink()->m_next;
 		LinkNode* prevNode = a_iter.GetLink()->m_prev;
 
-		if (nextNode != nullptr) {
-			nextNode->m_prev = nullptr;
+		if (nextNode) {
+			nextNode->m_prev = prevNode;
 		} else {
-			m_lastNode = nullptr;			// We are erasing the last node.
+			// We are erasing the last node.
+			m_lastNode = prevNode;			
 		}
-		if (prevNode != nullptr) {
-			prevNode->m_next = nullptr;
+		if (prevNode) {
+			prevNode->m_next = nextNode;
 		}
 		else {
-			m_firstNode = nullptr;			// We are deleting the first node.
+			// We are erasing the first node.
+			m_firstNode = nextNode;			
 		}
 
+		// Clear dynamically allocated memory
 		a_iter.EraseNode();
 
 		return nextPos;
 	}
-
 
 	/**
 	*	@brief Delete dynamically allocated memory held by iterator in a range
@@ -213,12 +209,7 @@ public:
 	LinkIterator Erase(LinkIterator a_first, LinkIterator a_last) {
 		auto currentIter = a_first;
 		while (currentIter != a_last) {
-			// Save next position
-			LinkIterator nextPos = currentIter;
-			++nextPos;
-
-			Erase(currentIter);
-			currentIter = nextPos;
+			currentIter = Erase(currentIter);
 		}
 
 		return currentIter;

@@ -267,6 +267,10 @@ public:
 
 			// There are duplicate keys, insert aborted.
 			if (a_pair->m_key == currentParent->GetKey()) {
+				// Take responsibility of dynamically allocated memory and free up memory for unused nodes
+				delete newNode;
+				delete a_pair;
+
 				return;
 			}
 
