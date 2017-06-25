@@ -134,6 +134,13 @@ void GameStateManager::DoSetState(const char * name)
 		// Check if state is already in active states
 		assert(!m_activeStates.Contains(foundNode->m_val) && "State already in active states");
 		m_activeStates.PushBack(foundNode->m_val);
+
+		// Run start up function on state
+		m_activeStates.Top()->Startup();
+
+		// Reset update and draw activeness
+		m_activeStates.Top()->SetDrawActive(true);
+		m_activeStates.Top()->SetUpdateActive(true);
 	}
 	else {
 		assert(false && "404 State not found.");
@@ -147,6 +154,8 @@ void GameStateManager::DoPopState()
 		return;
 	}
 
+	// Call shut-down function before removing
+	m_activeStates.Top()->Shutdown();
 	m_activeStates.PopBack();
 }
 

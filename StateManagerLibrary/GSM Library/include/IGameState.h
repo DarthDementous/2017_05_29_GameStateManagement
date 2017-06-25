@@ -16,8 +16,10 @@ public:
 	virtual ~IGameState();						// Base classes that are inherited from must have virtual destructor so memory clean up happens for base class as well
 
 	virtual void Initialise() = 0;
+	virtual void Startup() = 0;
 	virtual void Update(float deltaTime) = 0;
 	virtual void Draw() = 0;
+	virtual void Shutdown() = 0;
 
 	void SetUpdateActive(bool a_val) { updateIsActive = a_val; }
 	void SetDrawActive(bool a_val) { drawIsActive = a_val; }
