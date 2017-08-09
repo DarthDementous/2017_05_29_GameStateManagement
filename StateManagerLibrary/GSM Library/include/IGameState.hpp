@@ -3,17 +3,19 @@
 
 // Forward declarations
 namespace aie {
-	class Application;
+	class Renderer2D;
 }
 
 class IGameState {
 public:
 	/*
 	*	@brief	Base class that defines states of operation for an application.
-	*	@param	a_app is the application we pass in so we have access to its members and functions.
+	*	@param	a_r2d is the renderer pointer that we hold onto to draw states.
 	*/
-	IGameState(aie::Application* a_app);
-	virtual ~IGameState();						// Base classes that are inherited from must have virtual destructor so memory clean up happens for base class as well
+	IGameState(aie::Renderer2D* a_r2d = nullptr) : m_renderer(a_r2d) {
+		Initialise();
+	}
+	virtual ~IGameState() {}						// Base classes that are inherited from must have virtual destructor so memory clean up happens for base class as well
 
 	virtual void Initialise() = 0;
 	virtual void Startup() = 0;
@@ -28,7 +30,7 @@ public:
 	bool IsDrawActive() { return drawIsActive; }
 
 protected:
-	aie::Application* m_app;
+	aie::Renderer2D* m_renderer = nullptr;
 
 	bool updateIsActive = true;
 	bool drawIsActive = true;

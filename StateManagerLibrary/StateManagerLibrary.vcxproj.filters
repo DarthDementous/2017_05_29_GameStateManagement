@@ -48,18 +48,15 @@
     <ClInclude Include="libs\include\Stack.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="GSM Library\include\IGameState.h">
+    <ClInclude Include="GSM Library\include\GameStateManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="GSM Library\include\GameStateManager.h">
+    <ClInclude Include="GSM Library\include\IGameState.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GameStateManager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="IGameState.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "IGameState.h"
+#include "IGameState.hpp"
 #include <Stack.hpp>
 #include <Queue.hpp>
 #include <Map.hpp>
