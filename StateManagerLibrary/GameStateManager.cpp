@@ -31,7 +31,7 @@ void GameStateManager::Update(float deltaTime)
 	}
 }
 
-void GameStateManager::Draw()
+void GameStateManager::Draw(aie::Renderer2D* a_r2d)
 {
 	// Draw active states on the stack
 	Stack<IGameState*> tmp = m_activeStates;	// Avoid needing to shift memory by rebuilding stack
@@ -39,7 +39,7 @@ void GameStateManager::Draw()
 	while (!tmp.IsEmpty()) {
 		// Only draw states where drawing is active
 		if (tmp.Top()->IsDrawActive()) {
-			tmp.Top()->Draw();
+			tmp.Top()->Draw(a_r2d);
 		}
 		// Remove state to access next in stack
 		tmp.PopBack();
@@ -71,6 +71,13 @@ void GameStateManager::PopState()
 	cmd.action = eCommands::POP;
 
 	m_commands.PushBack(cmd);
+}
+
+IGameState * GameStateManager::GetState(const char * a_name)
+{
+	assert(m_states.findNode(a_name) != nullptr && "Tried to get state that doesn't exist in available states.");
+
+	return m_states[a_name];
 }
 
 void GameStateManager::PauseStates()
@@ -131,16 +138,19 @@ void GameStateManager::DoSetState(const char * name)
 	auto foundNode = m_states.findNode(name);
 
 	if (foundNode) {
-		// Check if state is already in active states
-		assert(!m_activeStates.Contains(foundNode->m_val) && "State already in active states");
-		m_activeStates.PushBack(foundNode->m_val);
+		IGameState* setState = foundNode->m_val;
 
 		// Run start up function on state
-		m_activeStates.Top()->Startup();
+		setState->Startup();
 
 		// Reset update and draw activeness
-		m_activeStates.Top()->SetDrawActive(true);
-		m_activeStates.Top()->SetUpdateActive(true);
+		setState->SetDrawActive(true);
+		setState->SetUpdateActive(true);
+
+		// Only add state to active states if it's not there already
+		if (!m_activeStates.Contains(setState)) {
+			m_activeStates.PushBack(foundNode->m_val);
+		}
 	}
 	else {
 		assert(false && "404 State not found.");

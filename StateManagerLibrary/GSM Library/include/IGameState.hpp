@@ -12,15 +12,15 @@ public:
 	*	@brief	Base class that defines states of operation for an application.
 	*	@param	a_r2d is the renderer pointer that we hold onto to draw states.
 	*/
-	IGameState(aie::Renderer2D* a_r2d = nullptr) : m_renderer(a_r2d) {
+	IGameState() {
 		Initialise();
 	}
 	virtual ~IGameState() {}						// Base classes that are inherited from must have virtual destructor so memory clean up happens for base class as well
 
-	virtual void Initialise() = 0;
+	virtual void Initialise() {}
 	virtual void Startup() = 0;
 	virtual void Update(float deltaTime) = 0;
-	virtual void Draw() = 0;
+	virtual void Draw(aie::Renderer2D* a_r2d) = 0;
 	virtual void Shutdown() = 0;
 
 	void SetUpdateActive(bool a_val) { updateIsActive = a_val; }
@@ -30,8 +30,6 @@ public:
 	bool IsDrawActive() { return drawIsActive; }
 
 protected:
-	aie::Renderer2D* m_renderer = nullptr;
-
 	bool updateIsActive = true;
 	bool drawIsActive = true;
 private:

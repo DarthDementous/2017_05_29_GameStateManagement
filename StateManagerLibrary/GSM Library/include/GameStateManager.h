@@ -5,20 +5,32 @@
 #include <Queue.hpp>
 #include <Map.hpp>
 
+namespace aie {
+	class Renderer2D;
+}
+
 class GameStateManager {
 public:
 	/*
 	*	@brief	Class that handles which states are active.
+	*	@param	a_r2d is the pointer to renderer2D used to render states.
 	*/
 	GameStateManager();
 	~GameStateManager();
 
 	void Update(float deltaTime);
-	void Draw();
+	void Draw(aie::Renderer2D* a_r2d);
 
 	void PushState(const char* name, IGameState *state);
 	void SetState(const char* name);
 	void PopState();
+
+	/**
+	*	@brief Get specified state from available states by key.
+	*	@param a_name is the name of the state.
+	*	@return desired state.
+	*/
+	IGameState* GetState(const char* a_name);
 
 	/**
 	*	@brief Get top state off the stack.
