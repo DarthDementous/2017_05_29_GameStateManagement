@@ -203,6 +203,11 @@ public:
 	TreeNode* GetFirstNode() {
 		TreeNode* currentNode = m_rootNode;
 
+		// If map is empty, return nullptr
+		if (!m_rootNode) {
+			return nullptr;
+		}
+
 		while (currentNode->m_left) {
 			currentNode = currentNode->m_left;
 		}
