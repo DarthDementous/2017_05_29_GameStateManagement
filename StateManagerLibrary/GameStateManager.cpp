@@ -59,8 +59,17 @@ void GameStateManager::PushState(const char * name, IGameState * state)
 void GameStateManager::SetState(const char * name)
 {
 	Command cmd;
-	cmd.action = eCommands::SET;
+	cmd.action = eCommands::SET_BYNAME;
 	cmd.name = name;
+
+	m_commands.PushBack(cmd);
+}
+
+void GameStateManager::SetState(IGameState * state)
+{
+	Command cmd;
+	cmd.action = eCommands::SET_BYSTATE;
+	cmd.state = state;
 
 	m_commands.PushBack(cmd);
 }
@@ -73,11 +82,48 @@ void GameStateManager::PopState()
 	m_commands.PushBack(cmd);
 }
 
+IGameState* GameStateManager::GetTopState() {
+	// Don't access active states if stack isn't initialized
+	if (!m_activeStates.IsEmpty()) {
+		return m_activeStates.Top();
+	}
+
+	// No active states, return nullptr
+	return nullptr;
+}
+
 IGameState * GameStateManager::GetState(const char * a_name)
 {
 	assert(m_states.findNode(a_name) != nullptr && "Tried to get state that doesn't exist in available states.");
 
 	return m_states[a_name];
+}
+
+std::vector<IGameState*> GameStateManager::GetActiveStates()
+{
+	std::vector<IGameState*> result;
+
+	// Copy active state pointers to a vector via temporary copy
+	Stack<IGameState*> tmp = m_activeStates;	
+
+	while (!tmp.IsEmpty()) {
+		result.push_back(tmp.Top());
+		tmp.PopBack();					// Does NOT delete memory, only removes it from temporary stack
+	}
+
+	return result;
+}
+
+std::vector<IGameState*> GameStateManager::GetStates()
+{
+	std::vector<IGameState*> result;
+
+	// Copy pointers from available states into vector
+	for (auto state : m_states) {
+		result.push_back(state.m_val);
+	}
+
+	return result;
 }
 
 void GameStateManager::PauseStates()
@@ -104,7 +150,7 @@ void GameStateManager::DoPauseStates()
 
 	while (!tmp.IsEmpty()) {
 		tmp.Top()->SetUpdateActive(false);		// Will apply to m_activeStates because of pointers
-		tmp.PopBack();
+		tmp.PopBack();							
 	}
 }
 
@@ -143,17 +189,40 @@ void GameStateManager::DoSetState(const char * name)
 		// Run start up function on state
 		setState->Startup();
 
-		// Reset update and draw activeness
-		setState->SetDrawActive(true);
-		setState->SetUpdateActive(true);
-
 		// Only add state to active states if it's not there already
 		if (!m_activeStates.Contains(setState)) {
-			m_activeStates.PushBack(foundNode->m_val);
+			m_activeStates.PushBack(setState);
 		}
 	}
 	else {
-		assert(false && "404 State not found.");
+		assert(false && "Tried to set state that wasn't in available states.");
+	}
+}
+
+void GameStateManager::DoSetState(IGameState * a_state)
+{
+	IGameState* foundState = nullptr;
+
+	// Check that state is in available states
+	for (auto state : m_states) {
+		if (state.m_val == a_state) {
+			foundState = state.m_val;
+		}
+	}
+
+	// State is available
+	if (foundState) {
+		// Run start up function on state
+		foundState->Startup();
+
+		// Only add state to active states if it's not there already
+		if (!m_activeStates.Contains(foundState)) {
+			m_activeStates.PushBack(foundState);
+		}
+	}
+	
+	else {
+		assert(false && "Tried to set state that wasn't in available states.");
 	}
 }
 
@@ -176,11 +245,12 @@ void GameStateManager::ProcessCommands()
 		GameStateManager::Command cmd = m_commands.Top();
 
 		switch (cmd.action) {
-		case eCommands::SET:	DoSetState(cmd.name);				break;
-		case eCommands::PUSH:	DoPushState(cmd.name, cmd.state);	break;
-		case eCommands::POP:	DoPopState();						break;
-		case eCommands::PAUSE:	DoPauseStates();					break;
-		case eCommands::RESUME:	DoResumeStates();					break;
+		case eCommands::SET_BYNAME:	DoSetState(cmd.name);				break;
+		case eCommands::SET_BYSTATE:DoSetState(cmd.state);				break;
+		case eCommands::PUSH:		DoPushState(cmd.name, cmd.state);	break;
+		case eCommands::POP:		DoPopState();						break;
+		case eCommands::PAUSE:		DoPauseStates();					break;
+		case eCommands::RESUME:		DoResumeStates();					break;
 
 		default:
 			assert(false && "Invalid command on queue");

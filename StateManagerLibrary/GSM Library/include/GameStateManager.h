@@ -4,6 +4,7 @@
 #include <Stack.hpp>
 #include <Queue.hpp>
 #include <Map.hpp>
+#include <vector>
 
 namespace aie {
 	class Renderer2D;
@@ -23,6 +24,7 @@ public:
 
 	void PushState(const char* name, IGameState *state);
 	void SetState(const char* name);
+	void SetState(IGameState* state);
 	void PopState();
 
 	/**
@@ -33,10 +35,22 @@ public:
 	IGameState* GetState(const char* a_name);
 
 	/**
-	*	@brief Get top state off the stack.
-	*	@return State at the end of the container.
+	*	@brief Return all current active states.
+	*	@return Vector of active states (empty if no states active)
 	*/
-	IGameState* GetTopState() { return m_activeStates.Top(); }
+	std::vector<IGameState*> GetActiveStates();
+
+	/**
+	*	@brief Return all available states.
+	*	@return Vector of possible states (empty if no possible states)
+	*/
+	std::vector<IGameState*> GetStates();
+
+	/**
+	*	@brief Get top state off the stack.
+	*	@return State at the end of the container, if no active states then returns nullptr.
+	*/
+	IGameState* GetTopState();
 
 	/**
 	*	@brief Send command to pause current states
@@ -51,7 +65,8 @@ public:
 private:
 	// Commands to be queued and executed
 	enum class eCommands {
-		SET,
+		SET_BYNAME,
+		SET_BYSTATE,
 		PUSH,
 		POP,
 		PAUSE,
@@ -83,10 +98,16 @@ private:
 	void DoPushState(const char* name, IGameState *state);
 
 	/**
-	*	@brief	Add the active state by key to the active state vector
+	*	@brief	Add the active state by key to the active state stack.
 	*	@param	name is the key that identifies the desired state.
 	*/
 	void DoSetState(const char* name);
+
+	/**
+	*	@brief Add the active state by value to the active state stack.
+	*	@param state is the pointer to the state to go onto the active stack (must already be in available states)
+	*/
+	void DoSetState(IGameState* state);
 
 	/**
 	*	@brief	Removes a state from the end of the active state container.
